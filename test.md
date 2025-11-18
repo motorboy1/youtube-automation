@@ -1,0 +1,1 @@
+Claude Code – GitHub 연결 테스트 완료
