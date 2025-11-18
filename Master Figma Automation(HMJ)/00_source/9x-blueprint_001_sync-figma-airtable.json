@@ -1,0 +1,742 @@
+{
+    "name": "Figma: Sync Assets to Airtable | 9x",
+    "flow": [
+        {
+            "id": 1,
+            "module": "gateway:CustomWebHook",
+            "version": 1,
+            "parameters": {
+                "hook": 1727985,
+                "maxResults": 1
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 0
+                },
+                "restore": {
+                    "parameters": {
+                        "hook": {
+                            "label": "Figma Webhook Library Published",
+                            "data": {
+                                "editable": "true"
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "hook",
+                        "type": "hook:gateway-webhook",
+                        "label": "Webhook",
+                        "required": true
+                    },
+                    {
+                        "name": "maxResults",
+                        "type": "number",
+                        "label": "Maximum number of results"
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "created_components",
+                        "type": "array"
+                    },
+                    {
+                        "name": "created_styles",
+                        "type": "array"
+                    },
+                    {
+                        "name": "created_variables",
+                        "type": "array"
+                    },
+                    {
+                        "name": "deleted_components",
+                        "type": "array"
+                    },
+                    {
+                        "name": "deleted_styles",
+                        "type": "array"
+                    },
+                    {
+                        "name": "deleted_variables",
+                        "type": "array"
+                    },
+                    {
+                        "name": "description",
+                        "type": "text"
+                    },
+                    {
+                        "name": "event_type",
+                        "type": "text"
+                    },
+                    {
+                        "name": "file_key",
+                        "type": "text"
+                    },
+                    {
+                        "name": "file_name",
+                        "type": "text"
+                    },
+                    {
+                        "name": "modified_components",
+                        "type": "array",
+                        "spec": {
+                            "type": "collection",
+                            "spec": [
+                                {
+                                    "name": "name",
+                                    "type": "text"
+                                },
+                                {
+                                    "name": "key",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "modified_styles",
+                        "type": "array"
+                    },
+                    {
+                        "name": "modified_variables",
+                        "type": "array"
+                    },
+                    {
+                        "name": "passcode",
+                        "type": "text"
+                    },
+                    {
+                        "name": "protocol_version",
+                        "type": "text"
+                    },
+                    {
+                        "name": "retries",
+                        "type": "number"
+                    },
+                    {
+                        "name": "timestamp",
+                        "type": "text"
+                    },
+                    {
+                        "name": "triggered_by",
+                        "type": "collection",
+                        "spec": [
+                            {
+                                "name": "id",
+                                "type": "text"
+                            },
+                            {
+                                "name": "handle",
+                                "type": "text"
+                            },
+                            {
+                                "name": "email",
+                                "type": "text"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "webhook_id",
+                        "type": "text"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 2,
+            "module": "util:SetVariables",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "scope": "roundtrip",
+                "variables": [
+                    {
+                        "name": "Figma File Key",
+                        "value": ""
+                    },
+                    {
+                        "name": "Figma Node ID",
+                        "value": ""
+                    },
+                    {
+                        "name": "Airtable Endpoint Path",
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 0,
+                    "name": "Set variables here"
+                },
+                "restore": {
+                    "expect": {
+                        "scope": {
+                            "label": "One cycle"
+                        },
+                        "variables": {
+                            "items": [
+                                null,
+                                null,
+                                null
+                            ]
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "variables",
+                        "spec": [
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Variable name",
+                                "required": true
+                            },
+                            {
+                                "name": "value",
+                                "type": "any",
+                                "label": "Variable value"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Variables"
+                    },
+                    {
+                        "name": "scope",
+                        "type": "select",
+                        "label": "Variable lifetime",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "roundtrip",
+                                "execution"
+                            ]
+                        }
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "Figma File Key",
+                        "type": "any",
+                        "label": "Figma File Key"
+                    },
+                    {
+                        "name": "Figma Node ID",
+                        "type": "any",
+                        "label": "Figma Node ID"
+                    },
+                    {
+                        "name": "Airtable Endpoint Path",
+                        "type": "any",
+                        "label": "Airtable Endpoint Path"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 3,
+            "module": "figma:MakeanAPICall",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 3018913
+            },
+            "filter": {
+                "name": "Only trigger for desired file",
+                "conditions": [
+                    [
+                        {
+                            "a": "{{1.file_key}}",
+                            "o": "text:equal",
+                            "b": "{{2.`Figma File Key`}}"
+                        }
+                    ]
+                ]
+            },
+            "mapper": {
+                "url": "files/{{2.`Figma File Key`}}/nodes",
+                "method": "GET",
+                "headers": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "qs": [
+                    {
+                        "key": "ids",
+                        "value": "{{2.`Figma Node ID`}}"
+                    }
+                ]
+            },
+            "metadata": {
+                "designer": {
+                    "x": 610,
+                    "y": 0,
+                    "name": "GET file nodes"
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "label": "Figma Connection",
+                            "data": {
+                                "scoped": "true",
+                                "connection": "figma"
+                            }
+                        }
+                    },
+                    "expect": {
+                        "method": {
+                            "mode": "chose",
+                            "label": "GET"
+                        },
+                        "headers": {
+                            "mode": "chose",
+                            "items": [
+                                null
+                            ]
+                        },
+                        "qs": {
+                            "mode": "chose",
+                            "items": [
+                                null
+                            ]
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:figma",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "url",
+                        "type": "text",
+                        "label": "URL",
+                        "required": true
+                    },
+                    {
+                        "name": "method",
+                        "type": "select",
+                        "label": "Method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "GET",
+                                "POST",
+                                "PUT",
+                                "PATCH",
+                                "DELETE"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "headers",
+                        "type": "array",
+                        "label": "Headers",
+                        "spec": [
+                            {
+                                "name": "key",
+                                "type": "text",
+                                "label": "Key"
+                            },
+                            {
+                                "name": "value",
+                                "type": "text",
+                                "label": "Value"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "qs",
+                        "type": "array",
+                        "label": "Query String",
+                        "spec": [
+                            {
+                                "name": "key",
+                                "type": "text",
+                                "label": "Key"
+                            },
+                            {
+                                "name": "value",
+                                "type": "text",
+                                "label": "Value"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "body",
+                        "type": "any",
+                        "label": "Body"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 7,
+            "module": "util:SetVariables",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "variables": [
+                    {
+                        "name": "figma_frame_array",
+                        "value": "{{get(3.body.nodes; replace(2.`Figma Node ID`; \"-\"; \":\") + \".document.children\")}}"
+                    }
+                ],
+                "scope": "roundtrip"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 900,
+                    "y": 0
+                },
+                "restore": {
+                    "expect": {
+                        "variables": {
+                            "items": [
+                                null
+                            ]
+                        },
+                        "scope": {
+                            "label": "One cycle"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "variables",
+                        "type": "array",
+                        "label": "Variables",
+                        "spec": [
+                            {
+                                "name": "name",
+                                "label": "Variable name",
+                                "type": "text",
+                                "required": true
+                            },
+                            {
+                                "name": "value",
+                                "label": "Variable value",
+                                "type": "any"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "scope",
+                        "type": "select",
+                        "label": "Variable lifetime",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "roundtrip",
+                                "execution"
+                            ]
+                        }
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "figma_frame_array",
+                        "label": "figma_frame_array",
+                        "type": "any"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 4,
+            "module": "builtin:BasicFeeder",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "array": "{{7.figma_frame_array}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1200,
+                    "y": 0
+                },
+                "restore": {
+                    "expect": {
+                        "array": {
+                            "mode": "edit"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "array",
+                        "type": "array",
+                        "label": "Array",
+                        "mode": "edit",
+                        "spec": []
+                    }
+                ]
+            }
+        },
+        {
+            "id": 5,
+            "module": "csv:CreateAdvancedAggregator",
+            "version": 1,
+            "parameters": {
+                "type": 200271,
+                "includeHeaders": true,
+                "delimiterType": "other",
+                "newlineType": "LF",
+                "delimiter": ",",
+                "feeder": 4
+            },
+            "mapper": {
+                "NodeId": "{{4.id}}",
+                "ParentNodeId": "{{get(3.body.nodes; replace(2.`Figma Node ID`; \"-\"; \":\") + \".document.id\")}}",
+                "Name": "{{4.name}}",
+                "FileKey": "{{2.`Figma File Key`}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1500,
+                    "y": 0
+                },
+                "restore": {
+                    "parameters": {
+                        "type": {
+                            "label": "Figma Image"
+                        },
+                        "delimiterType": {
+                            "label": "Other"
+                        },
+                        "newlineType": {
+                            "label": "LF"
+                        }
+                    },
+                    "extra": {
+                        "feeder": {
+                            "label": "Iterator [4]"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "type",
+                        "type": "udt",
+                        "label": "Data structure",
+                        "required": true
+                    },
+                    {
+                        "name": "includeHeaders",
+                        "type": "boolean",
+                        "label": "Include headers in the first row",
+                        "required": true
+                    },
+                    {
+                        "name": "delimiterType",
+                        "type": "select",
+                        "label": "Delimiter",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                ",",
+                                "\t",
+                                "other"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "newlineType",
+                        "type": "select",
+                        "label": "Newline",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "LF",
+                                "CRLF"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "delimiter",
+                        "type": "text",
+                        "label": "Delimiter character",
+                        "validate": {
+                            "max": 1,
+                            "min": 1
+                        },
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "NodeId",
+                        "type": "text",
+                        "label": null
+                    },
+                    {
+                        "name": "ParentNodeId",
+                        "type": "text",
+                        "label": null
+                    },
+                    {
+                        "name": "Name",
+                        "type": "text",
+                        "label": null
+                    },
+                    {
+                        "name": "FileKey",
+                        "type": "text",
+                        "label": null
+                    }
+                ]
+            }
+        },
+        {
+            "id": 6,
+            "module": "airtable:makeApiCall",
+            "version": 3,
+            "parameters": {
+                "__IMTCONN__": 2048236
+            },
+            "mapper": {
+                "url": "{{2.`Airtable Endpoint Path`}}",
+                "method": "POST",
+                "headers": [
+                    {
+                        "key": "Content-Type",
+                        "value": "text/csv"
+                    }
+                ],
+                "body": "{{5.text}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1800,
+                    "y": 0
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "label": "Airtable Connection",
+                            "data": {
+                                "scoped": "true",
+                                "connection": "airtable2"
+                            }
+                        }
+                    },
+                    "expect": {
+                        "method": {
+                            "mode": "chose",
+                            "label": "POST"
+                        },
+                        "headers": {
+                            "mode": "chose",
+                            "items": [
+                                null
+                            ]
+                        },
+                        "qs": {
+                            "mode": "chose"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:airtable3,airtable2",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "url",
+                        "type": "text",
+                        "label": "URL",
+                        "required": true
+                    },
+                    {
+                        "name": "method",
+                        "type": "select",
+                        "label": "Method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "GET",
+                                "POST",
+                                "PUT",
+                                "PATCH",
+                                "DELETE"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "headers",
+                        "type": "array",
+                        "label": "Headers",
+                        "spec": [
+                            {
+                                "name": "key",
+                                "type": "text",
+                                "label": "Key"
+                            },
+                            {
+                                "name": "value",
+                                "type": "text",
+                                "label": "Value"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "qs",
+                        "type": "array",
+                        "label": "Query String",
+                        "spec": [
+                            {
+                                "name": "key",
+                                "type": "text",
+                                "label": "Key"
+                            },
+                            {
+                                "name": "value",
+                                "type": "text",
+                                "label": "Value"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "body",
+                        "type": "any",
+                        "label": "Body"
+                    }
+                ]
+            }
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu1.make.com"
+    }
+}
