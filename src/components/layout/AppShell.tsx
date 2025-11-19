@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { TopNavbar } from "./panels/TopNavbar";
 import { LayoutManager, LayoutMode } from "./LayoutManager";
+import { Sidebar } from "./Sidebar";
 
 interface AppShellProps {
   mode?: LayoutMode;
@@ -57,10 +59,15 @@ export function AppShell({
   rightPanel,
   bottomPanel,
 }: AppShellProps) {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <div className="flex h-screen flex-col overflow-hidden">
+      {/* Sidebar */}
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+
       {/* TopNavbar - 고정 */}
-      <TopNavbar>{navbarChildren}</TopNavbar>
+      <TopNavbar onMenuClick={() => setSidebarOpen(true)}>{navbarChildren}</TopNavbar>
 
       {/* LayoutManager - 모드에 따라 패널 배치 */}
       <div className="flex-1 overflow-hidden">

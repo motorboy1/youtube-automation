@@ -1,12 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { Menu } from "lucide-react";
 import { fadeIn } from "@/lib/motion-variants";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 interface TopNavbarProps {
   className?: string;
   children?: React.ReactNode;
+  onMenuClick?: () => void;
 }
 
 /**
@@ -14,7 +17,7 @@ interface TopNavbarProps {
  * Part 1 규칙: AppShell의 최상단 네비게이션 바
  * Motion: fadeIn variant 사용
  */
-export function TopNavbar({ className, children }: TopNavbarProps) {
+export function TopNavbar({ className, children, onMenuClick }: TopNavbarProps) {
   return (
     <motion.header
       variants={fadeIn}
@@ -27,6 +30,18 @@ export function TopNavbar({ className, children }: TopNavbarProps) {
       )}
     >
       <div className="container flex h-14 items-center px-4">
+        {/* Menu Button */}
+        {onMenuClick && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onMenuClick}
+            className="mr-2"
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
+        )}
+
         {/* Logo / Brand */}
         <div className="mr-4 flex items-center space-x-2">
           <span className="text-xl font-bold">25+ Tool Studio</span>
