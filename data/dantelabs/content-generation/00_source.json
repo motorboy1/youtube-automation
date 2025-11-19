@@ -1,0 +1,57 @@
+{
+  "toolId": "ai-script-generator",
+  "name": "AI Script Generator",
+  "category": "content-generation",
+  "description": "Generate engaging YouTube video scripts using AI. Supports multiple niches, tone customization, and SEO optimization.",
+  "version": "3.0.1",
+  "layoutMode": "three-pane",
+  "features": [
+    "AI-powered script generation",
+    "Niche-specific templates",
+    "Hook and CTA optimization",
+    "Keyword integration",
+    "Multi-language support",
+    "Export to TXT/PDF"
+  ],
+  "inputs": {
+    "topic": {
+      "type": "text",
+      "required": true,
+      "placeholder": "Enter video topic"
+    },
+    "niche": {
+      "type": "select",
+      "options": ["tech", "lifestyle", "education", "entertainment", "gaming", "finance"],
+      "required": true
+    },
+    "duration": {
+      "type": "number",
+      "min": 1,
+      "max": 60,
+      "default": 10,
+      "unit": "minutes"
+    },
+    "tone": {
+      "type": "select",
+      "options": ["casual", "professional", "energetic", "educational"],
+      "default": "casual"
+    },
+    "keywords": {
+      "type": "text[]",
+      "required": false
+    }
+  },
+  "outputs": {
+    "script": {
+      "type": "object",
+      "schema": {
+        "title": "string",
+        "hook": "string",
+        "body": "string",
+        "cta": "string",
+        "estimatedDuration": "number"
+      }
+    }
+  },
+  "apiEndpoint": "/api/tools/ai-script-generator"
+}

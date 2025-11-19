@@ -1,0 +1,53 @@
+{
+  "toolId": "bulk-video-uploader",
+  "name": "Bulk Video Uploader",
+  "category": "video-automation",
+  "description": "Automate batch video uploads to YouTube with metadata management, scheduling, and thumbnail assignment. Supports CSV import and API integration.",
+  "version": "2.1.0",
+  "layoutMode": "IDE",
+  "features": [
+    "Batch upload up to 50 videos",
+    "CSV metadata import",
+    "Auto-thumbnail generation",
+    "Scheduled publishing",
+    "Progress tracking",
+    "Error recovery"
+  ],
+  "inputs": {
+    "videoFiles": {
+      "type": "file[]",
+      "accept": "video/mp4,video/mov",
+      "required": true
+    },
+    "metadataCSV": {
+      "type": "file",
+      "accept": "text/csv",
+      "required": false
+    },
+    "privacyStatus": {
+      "type": "select",
+      "options": ["public", "private", "unlisted"],
+      "default": "private"
+    },
+    "publishSchedule": {
+      "type": "datetime",
+      "required": false
+    }
+  },
+  "outputs": {
+    "uploadedVideos": {
+      "type": "array",
+      "schema": {
+        "videoId": "string",
+        "title": "string",
+        "url": "string",
+        "status": "string"
+      }
+    }
+  },
+  "apiEndpoint": "/api/tools/bulk-video-uploader",
+  "rateLimit": {
+    "maxRequests": 100,
+    "perWindow": "1h"
+  }
+}

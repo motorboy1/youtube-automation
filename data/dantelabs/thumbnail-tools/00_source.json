@@ -1,0 +1,49 @@
+{
+  "toolId": "ai-thumbnail-generator",
+  "name": "AI Thumbnail Generator",
+  "category": "thumbnail-tools",
+  "description": "Create eye-catching YouTube thumbnails with AI. Includes templates, text overlay, and A/B testing capabilities.",
+  "version": "3.1.2",
+  "layoutMode": "three-pane",
+  "features": [
+    "AI-generated thumbnails",
+    "Custom templates",
+    "Text and emoji overlay",
+    "Background removal",
+    "A/B testing",
+    "Click-through rate prediction"
+  ],
+  "inputs": {
+    "videoFrame": {
+      "type": "file",
+      "accept": "image/*",
+      "required": false
+    },
+    "template": {
+      "type": "select",
+      "options": ["minimal", "bold", "dramatic", "professional", "gaming"],
+      "default": "bold"
+    },
+    "titleText": {
+      "type": "text",
+      "required": true,
+      "maxLength": 50
+    },
+    "colorScheme": {
+      "type": "select",
+      "options": ["vibrant", "dark", "light", "custom"],
+      "default": "vibrant"
+    }
+  },
+  "outputs": {
+    "thumbnails": {
+      "type": "array",
+      "schema": {
+        "url": "string",
+        "variant": "string",
+        "predictedCTR": "number"
+      }
+    }
+  },
+  "apiEndpoint": "/api/tools/ai-thumbnail-generator"
+}

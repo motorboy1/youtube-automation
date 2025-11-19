@@ -1,0 +1,45 @@
+{
+  "toolId": "channel-analytics-dashboard",
+  "name": "Channel Analytics Dashboard",
+  "category": "analytics",
+  "description": "Comprehensive analytics dashboard for YouTube channels. Track views, engagement, revenue, and growth metrics with AI-powered insights.",
+  "version": "4.2.0",
+  "layoutMode": "dashboard",
+  "features": [
+    "Real-time analytics",
+    "Historical data visualization",
+    "Competitor analysis",
+    "Revenue tracking",
+    "Audience demographics",
+    "AI-powered recommendations"
+  ],
+  "inputs": {
+    "channelId": {
+      "type": "text",
+      "required": true,
+      "placeholder": "Enter YouTube Channel ID"
+    },
+    "dateRange": {
+      "type": "daterange",
+      "default": "last30days"
+    },
+    "metrics": {
+      "type": "multiselect",
+      "options": ["views", "watchTime", "subscribers", "revenue", "engagement"],
+      "default": ["views", "subscribers"]
+    }
+  },
+  "outputs": {
+    "analytics": {
+      "type": "object",
+      "schema": {
+        "totalViews": "number",
+        "totalSubscribers": "number",
+        "avgWatchTime": "number",
+        "engagementRate": "number",
+        "topVideos": "array"
+      }
+    }
+  },
+  "apiEndpoint": "/api/tools/channel-analytics-dashboard"
+}

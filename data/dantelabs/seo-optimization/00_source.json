@@ -1,0 +1,49 @@
+{
+  "toolId": "seo-optimizer",
+  "name": "SEO Optimizer",
+  "category": "seo-optimization",
+  "description": "Optimize video titles, descriptions, and tags for maximum YouTube SEO performance. Includes keyword research and competitor analysis.",
+  "version": "2.5.3",
+  "layoutMode": "IDE",
+  "features": [
+    "Keyword research",
+    "Title optimization",
+    "Description generator",
+    "Tag recommendations",
+    "Competitor analysis",
+    "SEO score calculation"
+  ],
+  "inputs": {
+    "videoTitle": {
+      "type": "text",
+      "required": true,
+      "maxLength": 100
+    },
+    "description": {
+      "type": "textarea",
+      "required": false,
+      "maxLength": 5000
+    },
+    "targetKeywords": {
+      "type": "text[]",
+      "required": true
+    },
+    "competitorUrls": {
+      "type": "text[]",
+      "required": false
+    }
+  },
+  "outputs": {
+    "optimizedMetadata": {
+      "type": "object",
+      "schema": {
+        "title": "string",
+        "description": "string",
+        "tags": "array",
+        "seoScore": "number",
+        "improvements": "array"
+      }
+    }
+  },
+  "apiEndpoint": "/api/tools/seo-optimizer"
+}

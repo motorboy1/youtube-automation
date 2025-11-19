@@ -1,0 +1,47 @@
+{
+  "toolId": "smart-scheduler",
+  "name": "Smart Scheduler",
+  "category": "scheduling",
+  "description": "AI-powered video publishing scheduler. Analyzes audience behavior to recommend optimal upload times and manages content calendar.",
+  "version": "1.8.0",
+  "layoutMode": "dashboard",
+  "features": [
+    "AI-powered time optimization",
+    "Content calendar management",
+    "Timezone support",
+    "Recurring schedules",
+    "Batch scheduling",
+    "Performance tracking"
+  ],
+  "inputs": {
+    "videos": {
+      "type": "array",
+      "required": true,
+      "schema": {
+        "videoId": "string",
+        "preferredDate": "datetime"
+      }
+    },
+    "optimizationMode": {
+      "type": "select",
+      "options": ["maxViews", "maxEngagement", "consistent"],
+      "default": "maxViews"
+    },
+    "timezone": {
+      "type": "timezone",
+      "default": "UTC"
+    }
+  },
+  "outputs": {
+    "schedule": {
+      "type": "array",
+      "schema": {
+        "videoId": "string",
+        "publishTime": "datetime",
+        "expectedViews": "number",
+        "confidence": "number"
+      }
+    }
+  },
+  "apiEndpoint": "/api/tools/smart-scheduler"
+}
